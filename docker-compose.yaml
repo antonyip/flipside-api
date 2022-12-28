@@ -17,7 +17,7 @@ services:
       flipside_api_network:
         ipv4_address: 10.0.0.110
     ports: 
-      - 4000:80
+      - 4000:3000
 
 networks:
   flipside_api_network:
