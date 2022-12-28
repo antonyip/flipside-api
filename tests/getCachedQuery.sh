@@ -1,0 +1,1 @@
+curl -X POST localhost:4000/getCachedQuery -H 'Content-Type: application/json' --data '{"query": "select 2"}'

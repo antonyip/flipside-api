@@ -1,0 +1,29 @@
+version: '3.1'
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    volumes: 
+      - ./init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+    environment:
+      POSTGRES_PASSWORD: flipside-api-database-password
+    networks:
+      flipside_api_network:
+        ipv4_address: 10.0.0.100
+  website:
+    image: node-docker:latest
+    restart: unless-stopped
+    networks:
+      flipside_api_network:
+        ipv4_address: 10.0.0.110
+    ports: 
+      - 4000:80
+
+networks:
+  flipside_api_network:
+    ipam:
+      driver: default
+      config: 
+        - subnet: 10.0.0.0/24
+          ip_range: 10.0.0.0/24
+          gateway: 10.0.0.1
