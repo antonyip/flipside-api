@@ -11,13 +11,19 @@ services:
       flipside_api_network:
         ipv4_address: 10.0.0.100
   website:
-    image: node-docker:latest
+    image: node-website-docker:latest
     restart: unless-stopped
     networks:
       flipside_api_network:
         ipv4_address: 10.0.0.110
     ports: 
       - 4000:3000
+  refresher:
+    image: node-refresher-docker:latest
+    restart: unless-stopped
+    networks:
+      flipside_api_network:
+        ipv4_address: 10.0.0.120
 
 networks:
   flipside_api_network:

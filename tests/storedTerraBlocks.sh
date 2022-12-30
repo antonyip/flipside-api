@@ -1,0 +1,1 @@
+curl -X POST https://flipside-api.antonyip.com/storeQuery -H 'Content-Type: application/json' --data '{"query": "select date(block_timestamp) as day_date, count(1) as num_blocks from terra.core.fact_blocks where block_timestamp > current_date - 30 group by 1 order by 1"}'

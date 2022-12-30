@@ -20,7 +20,7 @@ function debugLog(myString){
 
 async function isQueryTTLValid(query) {
     const pg_res = await client.query(
-        'select CURRENT_TIMESTAMP - COALESCE(last_updated, to_timestamp(0)) as diff, result from stored_queries where query=$1',
+        'select now() - COALESCE(last_updated, to_timestamp(0)) as diff, result from stored_queries where query=$1',
         [query]
     )
 
@@ -39,7 +39,7 @@ async function storeQueryResults(query, results) {
 
     // Send the `Query` to Flipside's query engine and await the results
     const pg_res = await client.query(
-        'update stored_queries set result=$1, last_updated=CURRENT_TIMESTAMP where query=$2',
+        'update stored_queries set result=$1, last_updated=now() where query=$2',
         [results, query]
         )
 }
@@ -54,11 +54,20 @@ async function _getCachedQueryWeb(req, res) {
         res.send("Invalid Body");    
         return {"error":"Invalid Input Body"};
     }
+
     debugLog(`query: ${req.body.query}`)
     await storeQuery(req.body.query);
+
+    var isForced = false
+
+    if (req.body.force) {
+        isForced = true
+    }
+
     // if query is still valid
-    const { isValid, returnValue } = await isQueryTTLValid(req.body.query)
-    if (isValid) {
+    var { isValid, returnValue } = await isQueryTTLValid(req.body.query)
+
+    if (isValid && !isForced) {
         res.send(returnValue);
     }
     else { // else return previous values

@@ -1,0 +1,14 @@
+version: '3.1'
+services:  
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    networks:
+      flipside-api_flipside_api_network:
+        ipv4_address: 10.0.0.115
+    ports:
+      - 8080:8080
+
+networks:
+  flipside-api_flipside_api_network:
+    external: true
